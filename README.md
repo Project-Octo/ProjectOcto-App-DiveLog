@@ -1,4 +1,4 @@
-# octo_app
+#  ProjectOcto-App-DiveLog
 
 A new Flutter project.
 
