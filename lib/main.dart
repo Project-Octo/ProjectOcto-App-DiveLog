@@ -6,6 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
+// Screens
+import 'package:octo_app/screens/onboarding/onboarding.dart';
+
 final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
@@ -13,7 +16,7 @@ final theme = ThemeData(
     // Primary blue
     primary: const Color(0xFF0077C8),
     // See figma for reference
-    secondary: const Color(0xFFFCFCFD),
+    secondary: const Color(0xFFF4F8FB),
     tertiary: const Color(0xFF009E81),
   ).copyWith(),
   textTheme: GoogleFonts.notoSansKrTextTheme(),
@@ -34,17 +37,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Material 3 This is a test'),
-        ),
-        body: const Center(
-          child: Text(
-            'Material 3',
-            style: TextStyle(fontSize: 24),
-          ),
-        ),
-      ),
+      home: OnboardingScreen(),
     );
   }
 }
