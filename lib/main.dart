@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 // Screens
 import 'package:octo_app/screens/onboarding/onboarding.dart';
+import 'screens/login_page.dart';
 
 final theme = ThemeData(
   useMaterial3: true,
@@ -37,7 +38,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme,
-      home: OnboardingScreen(),
+      // home: const OnboardingScreen(),
+      home: const LoginPage(),
     );
   }
 }

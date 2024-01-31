@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 
 // Auth screen, add sign in, sign up, and login with Google buttons
 class AuthScreen extends StatelessWidget {
+  const AuthScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign In'),
+        title: const Text('Sign In'),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
