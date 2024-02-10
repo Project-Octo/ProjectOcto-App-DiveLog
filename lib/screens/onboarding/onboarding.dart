@@ -4,6 +4,9 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 // Models
 import 'package:octo_app/models/onboarding/onboarding_content.dart';
 
+//screens
+import '../login_page.dart';
+
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -44,6 +47,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 itemBuilder: (context, index) => Padding(
                       padding: const EdgeInsets.all(40),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(onboardingContentList[index].image,
                               height: 250),
@@ -83,10 +87,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: TextButton(
                 onPressed: () {
                   if (currentIndex == onboardingContentList.length - 1) {
-                    Navigator.pushNamed(context, '/login');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                    );
                   } else {
                     _pageController.nextPage(
-                        duration: Duration(milliseconds: 500),
+                        duration: const Duration(milliseconds: 500),
                         curve: Curves.easeInOutQuint);
                   }
                 },
