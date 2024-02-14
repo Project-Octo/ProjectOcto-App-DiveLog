@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 // Firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
 // Screens
 import 'package:octo_app/screens/onboarding/onboarding.dart';
-import 'screens/login_page.dart';
 
 final theme = ThemeData(
   useMaterial3: true,

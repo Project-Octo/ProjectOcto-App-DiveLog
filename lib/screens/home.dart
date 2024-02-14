@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 //screens
 import 'add_page.dart';
-import 'dives_page.dart'; // dives_page.dart 파일을 import
+import 'dives_page.dart';
+import 'animals_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,26 +13,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0; // 현재 선택된 탭 인덱스
+  int _selectedIndex = 0;
+  late String _appBarTitle; // AppBar 제목을 저장할 변수 추가
 
   final List<Widget> _pages = [
-    const DivesPage(), // DivesPage 위젯을 사용
-    const AnimalsPage(),
-  ]; // 탭 페이지 목록
+    const DivesPage(),
+    AnimalsPage(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _appBarTitle = 'Dives'; // 초기 제목 설정
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(_appBarTitle), // 동적으로 변경된 제목 사용
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // 뒤로 가기 버튼 동작
           },
         ),
-        // title: const Center(
-        //   child: Text('Home'),
-        // ),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -49,6 +55,8 @@ class _HomePageState extends State<HomePage> {
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
+            // 바텀 네비게이션 아이템에 따라 AppBar 제목 변경
+            _appBarTitle = index == 0 ? 'Dives' : 'Animals';
           });
         },
         items: const [
@@ -64,27 +72,13 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: 로그인 로직 구현
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddPage()),
           );
-
-          // 기록 추가 버튼 동작
         },
         child: const Icon(Icons.add),
       ),
-    );
-  }
-}
-
-class AnimalsPage extends StatelessWidget {
-  const AnimalsPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Animals Page'),
     );
   }
 }
