@@ -31,7 +31,6 @@ class _DivesPageState extends State<DivesPage> {
         'marineLife': 'Saw a turtle',
         'note': 'No special notes',
       },
-      // Add more dive records as needed
     ];
     _isExpandedList = List.generate(diveRecords.length, (index) => false);
   }
@@ -121,30 +120,26 @@ class _DivesPageState extends State<DivesPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: _isExpandedList[index]
                   ? [
-                      _buildInfoRow(Icons.location_on, 'Location',
-                          record['location'] ?? ''),
-                      _buildInfoRow(
-                          Icons.calendar_today, 'Date', record['date'] ?? ''),
-                      _buildInfoRow(Icons.arrow_downward, 'Max Depth',
-                          record['maxDepth'] ?? ''),
-                      _buildInfoRow(Icons.timer, 'Total Bottom Time',
-                          record['totalBottomTime'] ?? ''),
-                      _buildInfoRow(Icons.set_meal, 'Watched Fish Count',
-                          record['watchedFishCount']?.toString() ?? ''),
-                      _buildInfoRow(Icons.directions_boat, 'Dive Type',
-                          record['diveType'] ?? ''),
-                      _buildInfoRow(
-                          Icons.short_text, 'Note', record['note'] ?? ''),
+                      const Text("Hello"),
+                      _buildDataItem('Location', record['location']),
+                      _buildDataItem('Date', record['date']),
+                      _buildDataItem('Max Depth', record['maxDepth']),
+                      _buildDataItem(
+                          'Total Bottom Time', record['totalBottomTime']),
+                      if (record['watchedFishCount'] != null)
+                        _buildDataItem('Watched Fish Count',
+                            record['watchedFishCount'].toString()),
+                      if (record['diveType'] != null)
+                        _buildDataItem('Dive Type', record['diveType']),
+                      if (record['note'] != null)
+                        _buildDataItem('Note', record['note']),
                     ]
                   : [
-                      _buildInfoRow(Icons.location_on, 'Location',
-                          record['location'] ?? ''),
-                      _buildInfoRow(
-                          Icons.calendar_today, 'Date', record['date'] ?? ''),
-                      _buildInfoRow(Icons.arrow_downward, 'Max Depth',
-                          record['maxDepth'] ?? ''),
-                      _buildInfoRow(Icons.timer, 'Total Bottom Time',
-                          record['totalBottomTime'] ?? ''),
+                      _buildDataItem('Location', record['location']),
+                      _buildDataItem('Date', record['date']),
+                      _buildDataItem('Max Depth', record['maxDepth']),
+                      _buildDataItem(
+                          'Total Bottom Time', record['totalBottomTime']),
                     ],
             ),
             trailing: _isExpandedList[index]
@@ -184,38 +179,18 @@ class _DivesPageState extends State<DivesPage> {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildDataItem(String label, String? value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            color: Colors.grey[700],
-            size: 20,
-          ),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                value,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 16,
-                ),
-              ),
-            ],
+          Text(
+            '$label: ${value ?? ''}',
+            style: const TextStyle(
+              color: Colors.grey, // 수정된 부분
+              fontSize: 16,
+            ),
           ),
         ],
       ),
