@@ -49,12 +49,12 @@ class LoginPage extends StatelessWidget {
                 // TODO: 로그인 로직 구현
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(builder: (context) => const HomePage()),
                 );
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue, // 버튼의 배경색
-                onPrimary: Colors.white, // 텍스트 색상
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue, // 텍스트 색상
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0), // 버튼 모서리의 곡률 정도
                 ),

@@ -31,23 +31,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_appBarTitle), // 동적으로 변경된 제목 사용
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            // 뒤로 가기 버튼 동작
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {},
-          ),
-          const CircleAvatar(
-            backgroundImage: AssetImage('assets/images/profile_image.png'),
-          ),
-          const SizedBox(width: 10)
-        ],
+        title: Text(_appBarTitle),
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
