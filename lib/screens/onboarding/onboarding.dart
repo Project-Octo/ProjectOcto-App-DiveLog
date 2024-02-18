@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:octo_app/screens/onboarding/auth.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 // Models
@@ -14,6 +15,8 @@ class OnboardingScreen extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
+
+
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   int currentIndex = 0;
@@ -104,7 +107,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 if (currentIndex == onboardingContentList.length - 1) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    MaterialPageRoute(builder: (context) => const AuthScreen()),
                   );
                 } else {
                   _pageController.nextPage(

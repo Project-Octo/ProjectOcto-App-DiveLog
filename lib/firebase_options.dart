@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,7 +28,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,16 +49,6 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCY3SURcElSavfbmvnZrSfWQQLC87if5ak',
-    appId: '1:892182850935:web:9e9365f1dabbbd5dd80572',
-    messagingSenderId: '892182850935',
-    projectId: 'turing-cell-410207',
-    authDomain: 'turing-cell-410207.firebaseapp.com',
-    storageBucket: 'turing-cell-410207.appspot.com',
-    measurementId: 'G-TTPZR89NKM',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAM13DAkGobytvEwI4zoQQQV0jJh7yIxjk',
     appId: '1:892182850935:android:45947bacb361e01ad80572',
@@ -69,15 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'turing-cell-410207.appspot.com',
     iosClientId: '892182850935-f70lbg9i7h8d0p06tv4mt5i44j42taa5.apps.googleusercontent.com',
     iosBundleId: 'com.example.octoApp',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBaQ7LGc-K7xWJ9gwCy-uEkIyRdi5OGsxI',
-    appId: '1:892182850935:ios:7a726a77b8f47b8cd80572',
-    messagingSenderId: '892182850935',
-    projectId: 'turing-cell-410207',
-    storageBucket: 'turing-cell-410207.appspot.com',
-    iosClientId: '892182850935-dc5eq4he2cneiiqaegd9p2had543r29a.apps.googleusercontent.com',
-    iosBundleId: 'com.example.octoApp.RunnerTests',
   );
 }

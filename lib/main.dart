@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:octo_app/screens/auth_gate.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:octo_app/screens/onboarding/onboarding.dart';
 
 final theme = ThemeData(
   useMaterial3: true,
@@ -30,7 +30,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme,
-      home: const OnboardingScreen(),
+      home: const AuthGate(),
     );
   }
 }
