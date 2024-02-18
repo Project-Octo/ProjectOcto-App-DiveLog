@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  late String _appBarTitle; // AppBar 제목을 저장할 변수 추가
+  late String _appBarTitle;
 
   final List<Widget> _pages = [
     const DivesPage(),
@@ -24,14 +24,20 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _appBarTitle = 'Dives'; // 초기 제목 설정
+    _appBarTitle = 'Dives';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_appBarTitle),
+        title: Text(
+          _appBarTitle,
+          style: const TextStyle(
+            color: Color(0xFF0077C8),
+            fontWeight: FontWeight.w900,
+          ),
+        ),
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -39,7 +45,6 @@ class _HomePageState extends State<HomePage> {
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
-            // 바텀 네비게이션 아이템에 따라 AppBar 제목 변경
             _appBarTitle = index == 0 ? 'Dives' : 'Animals';
           });
         },
@@ -49,7 +54,7 @@ class _HomePageState extends State<HomePage> {
             label: 'Dives',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.set_meal),
+            icon: Icon(Icons.book),
             label: 'Animals',
           ),
         ],
