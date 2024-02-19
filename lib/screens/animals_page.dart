@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class AnimalsPage extends StatelessWidget {
+  AnimalsPage({super.key});
   final List<String> fishList = [
     'Salmon',
     'mackerel',
@@ -13,7 +14,7 @@ class AnimalsPage extends StatelessWidget {
     '최정환',
     'octopus',
     'turtle'
-  ]; //더미데이터
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -56,12 +57,12 @@ class FishCard extends StatelessWidget {
             children: [
               Expanded(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8), // 각 모서리 radius 값 설정
+                  borderRadius: BorderRadius.circular(8),
                   child: Image.asset(
                     'assets/images/$fishName.png',
-                    height: 100.0, // 이미지 높이 조정
-                    width: 100.0, // 이미지 너비 조정
-                    fit: BoxFit.cover, // 이미지가 컨테이너에 맞게 조정될 수 있도록 설정
+                    height: 100.0,
+                    width: 100.0,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -70,7 +71,7 @@ class FishCard extends StatelessWidget {
                 fishName,
                 style: const TextStyle(
                   fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                 ),
               )
             ],
@@ -83,8 +84,9 @@ class FishCard extends StatelessWidget {
   void _showFishInfo(BuildContext context) async {
     final fishInfo = await _fetchFishInfo(fishName);
 
+    // ignore: use_build_context_synchronously
     double deviceHeight = MediaQuery.of(context).size.height;
-    double targetHeight = deviceHeight * 0.8; // 화면의 80%만 차지하도록 설정
+    double targetHeight = deviceHeight * 0.8;
 
     // ignore: use_build_context_synchronously
     showModalBottomSheet(
@@ -118,7 +120,7 @@ class FishCard extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () => Navigator.pop(context), // 모달 바텀 시트 닫기
-                        child: Icon(Icons.close),
+                        child: const Icon(Icons.close),
                       ),
                     ],
                   ),
@@ -131,12 +133,11 @@ class FishCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8.0),
                   MarkdownBody(
+                    styleSheet: MarkdownStyleSheet(
+                      textScaleFactor: 1.1, // 원하는 폰트 크기로 설정
+                    ),
                     data: fishInfo,
                   ),
-                  // Text(
-                  //   fishInfo,
-                  //   style: const TextStyle(fontSize: 16.0),
-                  // ),
                 ],
               ),
             ),
@@ -158,7 +159,6 @@ class FishCard extends StatelessWidget {
       }),
     );
     if (response.statusCode == 200) {
-      print(response.body.runtimeType);
       return response.body;
     } else {
       throw Exception('Failed to load fish info');

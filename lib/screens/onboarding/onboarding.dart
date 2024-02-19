@@ -5,9 +5,6 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 // Models
 import 'package:octo_app/models/onboarding/onboarding_content.dart';
 
-// Screens
-import '../login_page.dart';
-
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
@@ -15,8 +12,6 @@ class OnboardingScreen extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
-
-
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   int currentIndex = 0;

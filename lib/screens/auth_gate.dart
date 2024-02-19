@@ -17,7 +17,6 @@ class AuthGate extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: Text("Is Loading..."));
           } else if (!snapshot.hasData) {
-            print('Snapshot => $snapshot');
             return const OnboardingScreen();
           }
           return const HomePage();
