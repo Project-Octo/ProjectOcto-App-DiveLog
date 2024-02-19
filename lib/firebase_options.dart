@@ -63,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '892182850935',
     projectId: 'turing-cell-410207',
     storageBucket: 'turing-cell-410207.appspot.com',
+    androidClientId: '892182850935-0e8598qahl3ekq2ka98rmb1ihb2r14dm.apps.googleusercontent.com',
     iosClientId: '892182850935-f70lbg9i7h8d0p06tv4mt5i44j42taa5.apps.googleusercontent.com',
     iosBundleId: 'com.example.octoApp',
   );

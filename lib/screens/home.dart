@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _appBarTitle = 'Dives';
+    _appBarTitle = 'Diving log';
   }
 
   @override
@@ -45,17 +45,17 @@ class _HomePageState extends State<HomePage> {
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
-            _appBarTitle = index == 0 ? 'Dives' : 'Animals';
+            _appBarTitle = index == 0 ? 'Diving log' : 'Observation';
           });
         },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.water),
-            label: 'Dives',
+            label: 'Diving',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Animals',
+            label: 'Observation',
           ),
         ],
       ),

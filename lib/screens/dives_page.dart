@@ -262,13 +262,13 @@ class _DivesPageState extends State<DivesPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFFF4F8FB),
+      color: Color.fromARGB(255, 238, 248, 255),
       child: ListView.builder(
         itemCount: diveRecords.length,
         itemBuilder: (BuildContext context, int index) {
           final record = diveRecords[index];
           return Card(
-            // color: const Color.fromARGB(255, 255, 255, 255),
+            elevation: 0,
             margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 25.0),
             child: Container(
               decoration: BoxDecoration(
@@ -291,7 +291,7 @@ class _DivesPageState extends State<DivesPage> {
                     Text(
                       " / ${record['date'] ?? ''}",
                       style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 15,
                           fontWeight: FontWeight.w200,
                           color: Colors.black54),
                     ),

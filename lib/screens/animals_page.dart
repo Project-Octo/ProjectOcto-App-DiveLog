@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class AnimalsPage extends StatelessWidget {
   final List<String> fishList = [
-    'salmon',
+    'Salmon',
     'mackerel',
     'octopus',
     'turtle',
-    'salmon',
-    'mackerel',
+    '강동헌',
+    '최정환',
     'octopus',
     'turtle'
   ]; //더미데이터
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(8.0),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
+    return Container(
+      color: Colors.white,
+      child: GridView.builder(
+        padding: const EdgeInsets.all(8.0),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+        ),
+        itemCount: fishList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return FishCard(
+            fishName: fishList[index],
+          );
+        },
       ),
-      itemCount: fishList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return FishCard(
-          fishName: fishList[index],
-        );
-      },
     );
   }
 }
@@ -40,62 +46,100 @@ class FishCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => _showFishInfo(context),
-      child: Card(
-        elevation: 4.0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Image.asset(
-                'assets/images/$fishName.png', // 이미지 경로는 해당 물고기의 이름과 일치하도록 가정합니다.
-                width: 80.0,
-                height: 80.0,
+      child: Container(
+        color: Colors.transparent,
+        child: Card(
+          elevation: 0.0,
+          color: Colors.transparent,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8), // 각 모서리 radius 값 설정
+                  child: Image.asset(
+                    'assets/images/$fishName.png',
+                    height: 100.0, // 이미지 높이 조정
+                    width: 100.0, // 이미지 너비 조정
+                    fit: BoxFit.cover, // 이미지가 컨테이너에 맞게 조정될 수 있도록 설정
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              fishName,
-              style: const TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+              const SizedBox(height: 8.0),
+              Text(
+                fishName,
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 
   void _showFishInfo(BuildContext context) async {
-    // 물고기 정보를 서버에 요청하고 모달로 표시하는 로직 구현
     final fishInfo = await _fetchFishInfo(fishName);
+
+    double deviceHeight = MediaQuery.of(context).size.height;
+    double targetHeight = deviceHeight * 0.8; // 화면의 80%만 차지하도록 설정
+
     // ignore: use_build_context_synchronously
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                fishName,
-                style: const TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
+          height: targetHeight,
+          margin: const EdgeInsets.only(top: 40),
+          padding: const EdgeInsets.only(right: 12, left: 12),
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
               ),
-              Expanded(
-                child: Image.asset(
-                  'assets/images/$fishName.png', // 이미지 경로는 해당 물고기의 이름과 일치하도록 가정합니다.
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        fishName,
+                        style: const TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context), // 모달 바텀 시트 닫기
+                        child: Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8.0),
+                  Image.asset(
+                    'assets/images/$fishName.png',
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(height: 8.0),
+                  MarkdownBody(
+                    data: fishInfo,
+                  ),
+                  // Text(
+                  //   fishInfo,
+                  //   style: const TextStyle(fontSize: 16.0),
+                  // ),
+                ],
               ),
-              const SizedBox(height: 8.0),
-              Text(
-                fishInfo, // 서버로부터 받은 물고기 정보
-                style: const TextStyle(fontSize: 16.0),
-              ),
-            ],
+            ),
           ),
         );
       },
@@ -103,10 +147,21 @@ class FishCard extends StatelessWidget {
   }
 
   Future<String> _fetchFishInfo(String fishName) async {
-    // 서버로부터 물고기 정보를 가져오는 비동기 함수
-    // 예를 들어, https://asia-northeast3-turing-cell-410207.cloudfunctions.net/octo-species-info-ai에 POST 요청을 보내고 응답을 처리합니다.
-    // 이 부분은 서버가 완성된 후에 정확한 요청 방법에 맞게 수정되어야 합니다.
-    // 여기서는 더미 데이터를 반환합니다.
-    return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget libero ac odio tincidunt dapibus. Nullam vestibulum eleifend mauris, quis varius erat lobortis a.';
+    final response = await http.post(
+      Uri.parse(
+          'https://asia-northeast3-turing-cell-410207.cloudfunctions.net/octo-species-info-ai'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'species': fishName,
+      }),
+    );
+    if (response.statusCode == 200) {
+      print(response.body.runtimeType);
+      return response.body;
+    } else {
+      throw Exception('Failed to load fish info');
+    }
   }
 }
