@@ -1,10 +1,11 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+
+import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 
 class AddPage extends StatefulWidget {
-  const AddPage({super.key});
+  const AddPage({Key? key});
 
   @override
   _AddPageState createState() => _AddPageState();
@@ -27,9 +28,35 @@ class _AddPageState extends State<AddPage> {
     r'^\d{4}-\d{2}-\d{2}$',
   );
 
-  Future<void> _uploadVideo() async {
-    if (_videoFile == null) {
-      print('No video selected.');
+  bool _isFormValid() {
+    return _nameController.text.isNotEmpty &&
+        _dateController.text.isNotEmpty &&
+        _locationController.text.isNotEmpty &&
+        _maxDepthController.text.isNotEmpty &&
+        _totalBottomTimeController.text.isNotEmpty &&
+        _watchedFishCountController.text.isNotEmpty &&
+        _videoFile != null;
+  }
+
+  Future<void> _upload() async {
+    // 사용자가 입력한 폼 검사
+    if (!_isFormValid()) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: const Text(
+              'Please fill all the required fields and select a video.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
       return;
     }
 
@@ -147,7 +174,7 @@ class _AddPageState extends State<AddPage> {
                 Text('Selected video: ${_videoFile!.path}'),
               const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: _uploadVideo,
+                onPressed: _upload,
                 child: const Text('Save'),
               ),
             ],
