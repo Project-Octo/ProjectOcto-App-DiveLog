@@ -10,7 +10,9 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SignInScreen(
       providers: [
-        EmailAuthProvider(),
+        //TODO: Login with email
+
+        // EmailAuthProvider(),
         GoogleProvider(
             clientId:
                 "892182850935-a54l1rpcau2hets9cgb85j5gfhft0lve.apps.googleusercontent.com"),

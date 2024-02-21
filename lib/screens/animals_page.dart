@@ -85,61 +85,55 @@ class FishCard extends StatelessWidget {
     final fishInfo = await _fetchFishInfo(fishName);
 
     // ignore: use_build_context_synchronously
-    double deviceHeight = MediaQuery.of(context).size.height;
-    double targetHeight = deviceHeight * 0.8;
-
-    // ignore: use_build_context_synchronously
     showModalBottomSheet(
+      scrollControlDisabledMaxHeightRatio: 0.5,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return Container(
-          height: targetHeight,
-          margin: const EdgeInsets.only(top: 40),
-          padding: const EdgeInsets.only(right: 12, left: 12),
-          child: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        fishName,
-                        style: const TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+        return SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.only(top: 40),
+            padding: const EdgeInsets.all(
+              18,
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      fishName,
+                      style: const TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
                       ),
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context), // 모달 바텀 시트 닫기
-                        child: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8.0),
-                  Image.asset(
-                    'assets/images/$fishName.png',
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  const SizedBox(height: 8.0),
-                  MarkdownBody(
-                    styleSheet: MarkdownStyleSheet(
-                      textScaleFactor: 1.1, // 원하는 폰트 크기로 설정
                     ),
-                    data: fishInfo,
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context), // 모달 바텀 시트 닫기
+                      child: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8.0),
+                Image.asset(
+                  'assets/images/$fishName.png',
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                const SizedBox(height: 8.0),
+                MarkdownBody(
+                  styleSheet: MarkdownStyleSheet(
+                    textScaleFactor: 1.1, // 원하는 폰트 크기로 설정
                   ),
-                ],
-              ),
+                  data: fishInfo,
+                ),
+              ],
             ),
           ),
         );

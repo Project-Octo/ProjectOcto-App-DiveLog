@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:octo_app/screens/auth_gate.dart';
+import 'package:octo_app/screens/onboarding/auth.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -31,6 +32,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: theme,
       home: const AuthGate(),
+      // home: const AuthScreen(),
     );
   }
 }

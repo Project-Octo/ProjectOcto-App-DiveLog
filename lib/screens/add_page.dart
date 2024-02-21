@@ -1,21 +1,25 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart' as http;
 
 class AddPage extends StatefulWidget {
+  const AddPage({super.key});
+
   @override
   _AddPageState createState() => _AddPageState();
 }
 
 class _AddPageState extends State<AddPage> {
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _dateController = TextEditingController();
-  TextEditingController _locationController = TextEditingController();
-  TextEditingController _maxDepthController = TextEditingController();
-  TextEditingController _totalBottomTimeController = TextEditingController();
-  TextEditingController _watchedFishCountController = TextEditingController();
-  TextEditingController _noteController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _maxDepthController = TextEditingController();
+  final TextEditingController _totalBottomTimeController =
+      TextEditingController();
+  final TextEditingController _watchedFishCountController =
+      TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
   File? _videoFile;
 
   String _selectedType = 'Single Gas'; // Default type
@@ -23,22 +27,46 @@ class _AddPageState extends State<AddPage> {
     r'^\d{4}-\d{2}-\d{2}$',
   );
 
+  Future<void> _uploadVideo() async {
+    if (_videoFile == null) {
+      print('No video selected.');
+      return;
+    }
+
+    // 서버 엔드포인트 설정
+    var uri = Uri.parse('YOUR_SERVER_UPLOAD_ENDPOINT');
+
+    // 파일 업로드를 위한 multipart 요청 생성
+    var request = http.MultipartRequest('POST', uri)
+      ..files.add(await http.MultipartFile.fromPath('video', _videoFile!.path));
+
+    // 요청 보내기
+    var response = await request.send();
+
+    // 응답 확인
+    if (response.statusCode == 200) {
+      print('Video uploaded successfully');
+    } else {
+      print('Failed to upload video. Error: ${response.reasonPhrase}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Dive Information'),
+        title: const Text('Add Dive Information'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Container(
-          padding: EdgeInsets.only(left: 10.0, right: 20.0),
+          padding: const EdgeInsets.only(left: 10.0, right: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Name'),
               ),
               TextFormField(
                 controller: _dateController,
@@ -64,8 +92,8 @@ class _AddPageState extends State<AddPage> {
                 items:
                     ['Single Gas', 'Multi Gas', 'Gauge', 'Apnea Hunt', 'Apnea']
                         .map((type) => DropdownMenuItem(
-                              child: Text(type),
                               value: type,
+                              child: Text(type),
                             ))
                         .toList(),
                 onChanged: (value) {
@@ -102,7 +130,7 @@ class _AddPageState extends State<AddPage> {
                     labelText: 'Note', prefixIcon: Icon(Icons.edit_note_sharp)),
                 maxLines: null,
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () async {
                   FilePickerResult? result =
@@ -113,18 +141,14 @@ class _AddPageState extends State<AddPage> {
                     });
                   }
                 },
-                child: Text('Select Video'),
+                child: const Text('Select Video'),
               ),
               if (_videoFile != null)
                 Text('Selected video: ${_videoFile!.path}'),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () {
-                  // Save dive information to database or perform desired action
-                  // You can access the entered information using the controllers
-                  // Also use _videoFile to access the selected video file
-                },
-                child: Text('Save'),
+                onPressed: _uploadVideo,
+                child: const Text('Save'),
               ),
             ],
           ),

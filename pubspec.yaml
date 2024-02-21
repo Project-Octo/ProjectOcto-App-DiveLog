@@ -49,8 +49,6 @@ dependencies:
   flutter_markdown: ^0.6.19
   file_picker: ^6.1.1
 
-  flutter_cupertino_date_picker: ^1.0.26
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
