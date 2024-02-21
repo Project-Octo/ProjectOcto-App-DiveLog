@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({Key? key});
@@ -22,9 +23,6 @@ class _AddPageState extends State<AddPage> {
   File? _videoFile;
 
   String _selectedType = 'Single Gas'; // Default type
-  final RegExp _dateRegExp = RegExp(
-    r'^\d{4}-\d{2}-\d{2}$',
-  );
 
   bool _isFormValid() {
     return _nameController.text.isNotEmpty &&
@@ -34,7 +32,9 @@ class _AddPageState extends State<AddPage> {
         _totalBottomTimeController.text.isNotEmpty;
   }
 
+// Google Cloud Storage 버킷 이름
   Future<void> _upload() async {
+    //Form 유효성 검사
     if (!_isFormValid()) {
       showDialog(
         context: context,
@@ -55,39 +55,30 @@ class _AddPageState extends State<AddPage> {
       return;
     }
 
-    // Google Cloud Storage 버킷 이름
-    const bucketName = 'gs://diver-logbook-videos';
+    //value for upload to firebase
+    final storage =
+        FirebaseStorage.instanceFor(bucket: "gs://diver-logbook-videos");
 
     // 파일 선택 창 표시 및 선택된 파일 경로 가져오기
     final result = await FilePicker.platform.pickFiles(type: FileType.video);
     if (result != null) {
       final filePath = result.files.single.path;
-
       final fileName = filePath?.split('/').last;
+      final ref = storage.ref().child('uploads/$fileName');
 
-      final request = http.MultipartRequest(
-          'POST',
-          Uri.parse(
-              'https://storage.googleapis.com/upload/storage/v1/b/$bucketName/o'));
-      request.files.add(await http.MultipartFile.fromPath('file', filePath!));
+      //파일 업로드
+      final task = ref.putFile(File(filePath!));
+      print('--------------------Upload started--------------------');
+      // 업로드 진행 상황 모니터링
+      task.snapshotEvents.listen((TaskSnapshot snapshot) {
+        final progress = snapshot.bytesTransferred / snapshot.totalBytes;
+        print('Upload progress: $progress');
+      });
 
-      // 요청 정보 출력
-      print('Uploading file: $filePath');
-      print('Bucket name: $bucketName');
-      print('File name: $fileName');
+      // 업로드 완료
+      await task;
 
-      // 요청 보내기
-      final response = await request.send();
-
-      // 응답 코드 출력
-      print('Response code: ${response.statusCode}');
-
-      // 응답 확인
-      if (response.statusCode == 200) {
-        print('Video uploaded successfully to Google Cloud Storage');
-      } else {
-        print('Failed to upload video. Error: ${response.reasonPhrase}');
-      }
+      print('Video uploaded successfully to Google Cloud Storage');
     } else {
       print('No file selected.');
     }
