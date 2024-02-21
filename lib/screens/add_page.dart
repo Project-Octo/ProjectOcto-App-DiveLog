@@ -56,12 +56,21 @@ class _AddPageState extends State<AddPage> {
 
     final storage =
         FirebaseStorage.instanceFor(bucket: "gs://diver-logbook-videos");
+    print('storage: $storage');
 
     final result = await FilePicker.platform.pickFiles(type: FileType.video);
+    print('result: $result');
     if (result != null) {
       final filePath = result.files.single.path;
+      print(
+          'filePath: $filePath'); // /data/user/0/com.example.octo_app/cache/file_picker/1000000018.mp4
       final fileName = filePath?.split('/').last;
+      print('fileName: $fileName'); // 1000000018.mp4
       final ref = storage.ref().child('uploads/$fileName');
+      print(
+          'ref: $ref'); // Reference(app: [DEFAULT], fullPath: uploads/1000000018.mp4)
+      print(
+          'File(filePath!): ${File(filePath!)}'); // File: '/data/user/0/com.example.octo_app/cache/file_picker/1000000018.mp4'
 
       //파일 업로드
       final task = ref.putFile(File(filePath!));
