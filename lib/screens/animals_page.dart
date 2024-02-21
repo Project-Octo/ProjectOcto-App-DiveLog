@@ -88,68 +88,71 @@ class FishCard extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return FutureBuilder(
-          future: _fetchFishInfo(fishName),
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              // 데이터를 받아오는 중일 때 로딩 화면을 표시합니다.
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              // 오류가 발생한 경우 오류를 표시합니다.
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            } else {
-              // 데이터를 정상적으로 받아왔을 때 화면을 구성합니다.
-              return SingleChildScrollView(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 40),
-                  padding: const EdgeInsets.all(18),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            fishName,
-                            style: const TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
+        return Container(
+          padding: const EdgeInsets.all(10.0),
+          child: FutureBuilder(
+            future: _fetchFishInfo(fishName),
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // 데이터를 받아오는 중일 때 로딩 화면을 표시합니다.
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                // 오류가 발생한 경우 오류를 표시합니다.
+                return Center(
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              } else {
+                // 데이터를 정상적으로 받아왔을 때 화면을 구성합니다.
+                return SingleChildScrollView(
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 40),
+                    padding: const EdgeInsets.all(18),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              fishName,
+                              style: const TextStyle(
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: const Icon(Icons.close),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8.0),
-                      Image.asset(
-                        'assets/images/$fishName.png',
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                      const SizedBox(height: 8.0),
-                      MarkdownBody(
-                        styleSheet: MarkdownStyleSheet(
-                          textScaleFactor: 1.1,
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: const Icon(Icons.close),
+                            ),
+                          ],
                         ),
-                        data: snapshot.data ?? '',
-                      ),
-                    ],
+                        const SizedBox(height: 8.0),
+                        Image.asset(
+                          'assets/images/$fishName.png',
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                        const SizedBox(height: 8.0),
+                        MarkdownBody(
+                          styleSheet: MarkdownStyleSheet(
+                            textScaleFactor: 1.1,
+                          ),
+                          data: snapshot.data ?? '',
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
-          },
+                );
+              }
+            },
+          ),
         );
       },
     );

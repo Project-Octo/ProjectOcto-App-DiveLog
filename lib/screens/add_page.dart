@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
@@ -18,8 +18,6 @@ class _AddPageState extends State<AddPage> {
   final TextEditingController _maxDepthController = TextEditingController();
   final TextEditingController _totalBottomTimeController =
       TextEditingController();
-  final TextEditingController _watchedFishCountController =
-      TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   File? _videoFile;
 
@@ -33,13 +31,10 @@ class _AddPageState extends State<AddPage> {
         _dateController.text.isNotEmpty &&
         _locationController.text.isNotEmpty &&
         _maxDepthController.text.isNotEmpty &&
-        _totalBottomTimeController.text.isNotEmpty &&
-        _watchedFishCountController.text.isNotEmpty &&
-        _videoFile != null;
+        _totalBottomTimeController.text.isNotEmpty;
   }
 
   Future<void> _upload() async {
-    // 사용자가 입력한 폼 검사
     if (!_isFormValid()) {
       showDialog(
         context: context,
@@ -60,21 +55,41 @@ class _AddPageState extends State<AddPage> {
       return;
     }
 
-    // 서버 엔드포인트 설정
-    var uri = Uri.parse('YOUR_SERVER_UPLOAD_ENDPOINT');
+    // Google Cloud Storage 버킷 이름
+    const bucketName = 'gs://diver-logbook-videos';
 
-    // 파일 업로드를 위한 multipart 요청 생성
-    var request = http.MultipartRequest('POST', uri)
-      ..files.add(await http.MultipartFile.fromPath('video', _videoFile!.path));
+    // 파일 선택 창 표시 및 선택된 파일 경로 가져오기
+    final result = await FilePicker.platform.pickFiles(type: FileType.video);
+    if (result != null) {
+      final filePath = result.files.single.path;
 
-    // 요청 보내기
-    var response = await request.send();
+      final fileName = filePath?.split('/').last;
 
-    // 응답 확인
-    if (response.statusCode == 200) {
-      print('Video uploaded successfully');
+      final request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://storage.googleapis.com/upload/storage/v1/b/$bucketName/o'));
+      request.files.add(await http.MultipartFile.fromPath('file', filePath!));
+
+      // 요청 정보 출력
+      print('Uploading file: $filePath');
+      print('Bucket name: $bucketName');
+      print('File name: $fileName');
+
+      // 요청 보내기
+      final response = await request.send();
+
+      // 응답 코드 출력
+      print('Response code: ${response.statusCode}');
+
+      // 응답 확인
+      if (response.statusCode == 200) {
+        print('Video uploaded successfully to Google Cloud Storage');
+      } else {
+        print('Failed to upload video. Error: ${response.reasonPhrase}');
+      }
     } else {
-      print('Failed to upload video. Error: ${response.reasonPhrase}');
+      print('No file selected.');
     }
   }
 
@@ -95,18 +110,30 @@ class _AddPageState extends State<AddPage> {
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Name'),
               ),
-              TextFormField(
-                controller: _dateController,
-                decoration: const InputDecoration(
-                    labelText: 'Date (yyyy-MM-dd)',
-                    prefixIcon: Icon(Icons.calendar_today)),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (!_dateRegExp.hasMatch(value!)) {
-                    return _dateRegExp.pattern;
-                  }
-                  return null;
-                },
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    controller: _dateController,
+                    decoration: const InputDecoration(
+                      labelText: 'Date',
+                      prefixIcon: Icon(Icons.calendar_today),
+                    ),
+                    onTap: () async {
+                      final DateTime? selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                      );
+
+                      if (selectedDate != null) {
+                        _dateController.text =
+                            DateFormat('yyyy-MM-dd').format(selectedDate);
+                      }
+                    },
+                  ),
+                ],
               ),
               TextFormField(
                 controller: _locationController,
@@ -145,37 +172,31 @@ class _AddPageState extends State<AddPage> {
                 keyboardType: TextInputType.number,
               ),
               TextFormField(
-                controller: _watchedFishCountController,
-                decoration: const InputDecoration(
-                    labelText: 'Watched Fish Count',
-                    prefixIcon: Icon(Icons.remove_red_eye_outlined)),
-                keyboardType: TextInputType.number,
-              ),
-              TextFormField(
                 controller: _noteController,
                 decoration: const InputDecoration(
                     labelText: 'Note', prefixIcon: Icon(Icons.edit_note_sharp)),
                 maxLines: null,
               ),
               const SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles(type: FileType.video);
-                  if (result != null) {
-                    setState(() {
-                      _videoFile = File(result.files.single.path!);
-                    });
-                  }
-                },
-                child: const Text('Select Video'),
-              ),
               if (_videoFile != null)
                 Text('Selected video: ${_videoFile!.path}'),
               const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: _upload,
-                child: const Text('Save'),
+                style: ElevatedButton.styleFrom(
+                  primary: const Color(0xFF0077C8), // 색상 변경
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)), // 경계선 추가
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Select Video & Upload',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
