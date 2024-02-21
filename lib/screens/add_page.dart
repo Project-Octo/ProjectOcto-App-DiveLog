@@ -32,7 +32,6 @@ class _AddPageState extends State<AddPage> {
         _totalBottomTimeController.text.isNotEmpty;
   }
 
-// Google Cloud Storage 버킷 이름
   Future<void> _upload() async {
     //Form 유효성 검사
     if (!_isFormValid()) {
@@ -55,11 +54,9 @@ class _AddPageState extends State<AddPage> {
       return;
     }
 
-    //value for upload to firebase
     final storage =
         FirebaseStorage.instanceFor(bucket: "gs://diver-logbook-videos");
 
-    // 파일 선택 창 표시 및 선택된 파일 경로 가져오기
     final result = await FilePicker.platform.pickFiles(type: FileType.video);
     if (result != null) {
       final filePath = result.files.single.path;
@@ -77,7 +74,6 @@ class _AddPageState extends State<AddPage> {
 
       // 업로드 완료
       await task;
-
       print('Video uploaded successfully to Google Cloud Storage');
     } else {
       print('No file selected.');
@@ -177,7 +173,7 @@ class _AddPageState extends State<AddPage> {
                 style: ElevatedButton.styleFrom(
                   primary: const Color(0xFF0077C8), // 색상 변경
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)), // 경계선 추가
+                      borderRadius: BorderRadius.circular(10)),
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
