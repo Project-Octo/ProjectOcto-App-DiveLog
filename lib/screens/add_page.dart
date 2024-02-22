@@ -180,7 +180,7 @@ class _AddPageState extends State<AddPage> {
               ElevatedButton(
                 onPressed: _upload,
                 style: ElevatedButton.styleFrom(
-                  primary: const Color(0xFF0077C8), // 색상 변경
+                  backgroundColor: const Color(0xFF0077C8), // 색상 변경
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                 ),
