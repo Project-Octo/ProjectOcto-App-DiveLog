@@ -4,6 +4,7 @@ import 'package:octo_app/screens/auth_gate.dart';
 import 'package:octo_app/screens/onboarding/auth.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 final theme = ThemeData(
   useMaterial3: true,

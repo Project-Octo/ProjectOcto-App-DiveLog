@@ -49,6 +49,10 @@ dependencies:
   flutter_markdown: ^0.6.19
   file_picker: ^6.1.1
   google_cloud: ^0.2.0
+  gcloud: ^0.8.12
+  intl: ^0.18.1
+  firebase_app_check: ^0.2.1+14
+  permission_handler: ^11.3.0
 
 dev_dependencies:
   flutter_test:
