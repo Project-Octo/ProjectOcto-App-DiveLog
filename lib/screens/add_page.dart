@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
@@ -61,23 +62,40 @@ class _AddPageState extends State<AddPage> {
     final result = await FilePicker.platform.pickFiles(type: FileType.video);
     print('result: $result');
     if (result != null) {
-      final filePath = result.files.single.path;
+      final filePath = result.files.single
+          .path; // /data/user/0/com.example.octo_app/cache/file_picker/1000000018.mp4
+
+      final fileName = filePath?.split('/').last;
+
+      final ref = storage.ref();
+
+      User? user = FirebaseAuth.instance.currentUser;
+      String uid = user!.uid;
+
       print(
           'filePath: $filePath'); // /data/user/0/com.example.octo_app/cache/file_picker/1000000018.mp4
-      final fileName = filePath?.split('/').last;
       print('fileName: $fileName'); // 1000000018.mp4
-      final ref = storage.ref().child('uploads/$fileName');
+
       print(
           'ref: $ref'); // Reference(app: [DEFAULT], fullPath: uploads/1000000018.mp4)
       print(
           'File(filePath!): ${File(filePath!)}'); // File: '/data/user/0/com.example.octo_app/cache/file_picker/1000000018.mp4'
+      print('_dateController: ${_dateController.text}');
+      print('_locationController: ${_locationController.text}');
+      print('UID: ${uid}');
 
-      //파일 업로드
-      final task = ref.putFile(File(filePath!));
+      // 파일 업로드
+      final newFileName =
+          '${uid}_${_dateController.text}_${_locationController.text}.mp4'; // userId_date_location.mp4
+      print('### newFileName: ${newFileName} ###');
+
+      final task = ref.child(newFileName).putFile(File(filePath!));
       print('--------------------Upload started--------------------');
+
       // 업로드 진행 상황 모니터링
       task.snapshotEvents.listen((TaskSnapshot snapshot) {
         final progress = snapshot.bytesTransferred / snapshot.totalBytes;
+
         print('Upload progress: $progress');
       });
 
@@ -180,7 +198,7 @@ class _AddPageState extends State<AddPage> {
               ElevatedButton(
                 onPressed: _upload,
                 style: ElevatedButton.styleFrom(
-                  primary: const Color(0xFF0077C8), // 색상 변경
+                  backgroundColor: const Color(0xFF0077C8), // 색상 변경
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                 ),
