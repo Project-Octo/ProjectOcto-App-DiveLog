@@ -5,6 +5,17 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+// dart:async, dart:io, dart:ui 라이브러리 import
+import 'dart:async';
+// device_info_plus 플러그인 import
+import 'package:device_info_plus/device_info_plus.dart';
+// 안드로이드 플랫폼 관련 import
+import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+// 로컬 알림 관련 import
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// shared_preferences 플러그인 import
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({Key? key});
@@ -33,7 +44,7 @@ class _AddPageState extends State<AddPage> {
         _totalBottomTimeController.text.isNotEmpty;
   }
 
-  Future<void> _upload() async {
+  Future<void> _uploadConfig() async {
     //Form 유효성 검사
     if (!_isFormValid()) {
       showDialog(
@@ -54,42 +65,67 @@ class _AddPageState extends State<AddPage> {
       );
       return;
     }
+    //파일 선택
+    final result = await FilePicker.platform.pickFiles(type: FileType.video);
 
+    //storage 버캣 주소 설정
     final storage =
         FirebaseStorage.instanceFor(bucket: "gs://diver-logbook-videos");
-    print('storage: $storage');
+    final ref = storage.ref();
 
-    final result = await FilePicker.platform.pickFiles(type: FileType.video);
-    print('result: $result');
+    // Entry point
+
     if (result != null) {
-      final filePath = result.files.single
-          .path; // /data/user/0/com.example.octo_app/cache/file_picker/1000000018.mp4
+      //파일 경로 설정
+      final filePath = result.files.single.path;
 
-      final fileName = filePath?.split('/').last;
-
-      final ref = storage.ref();
-
+      //userId 추출
       User? user = FirebaseAuth.instance.currentUser;
       String uid = user!.uid;
 
-      print(
-          'filePath: $filePath'); // /data/user/0/com.example.octo_app/cache/file_picker/1000000018.mp4
-      print('fileName: $fileName'); // 1000000018.mp4
-
-      print(
-          'ref: $ref'); // Reference(app: [DEFAULT], fullPath: uploads/1000000018.mp4)
-      print(
-          'File(filePath!): ${File(filePath!)}'); // File: '/data/user/0/com.example.octo_app/cache/file_picker/1000000018.mp4'
-      print('_dateController: ${_dateController.text}');
-      print('_locationController: ${_locationController.text}');
-      print('UID: ${uid}');
-
-      // 파일 업로드
+      //파일 이름 지정(userId_date_S_E.mp4)
       final newFileName =
           '${uid}_${_dateController.text}_${_locationController.text}.mp4'; // userId_date_location.mp4
-      print('### newFileName: ${newFileName} ###');
 
+      // 파일 업로드
+      // ignore: use_build_context_synchronously
+      // showDialog(
+      //   context: context,
+      //   barrierDismissible: false, // 로딩창이 닫히지 않도록 설정
+      //   builder: (context) => const Center(
+      //     child: CircularProgressIndicator(),
+      //   ),
+      // );
       final task = ref.child(newFileName).putFile(File(filePath!));
+      showDialog(
+        context: context,
+        barrierDismissible: false, // 로딩창이 닫히지 않도록 설정
+        builder: (context) => Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const CircularProgressIndicator(),
+                const SizedBox(height: 20.0),
+                StreamBuilder<TaskSnapshot>(
+                  stream: task.snapshotEvents,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      var progress = snapshot.data!.bytesTransferred /
+                          snapshot.data!.totalBytes;
+                      progress = progress * 100;
+                      return Text('${progress.toStringAsFixed(2)}%');
+                    } else {
+                      return const Text('0.00%');
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
       print('--------------------Upload started--------------------');
 
       // 업로드 진행 상황 모니터링
@@ -98,13 +134,23 @@ class _AddPageState extends State<AddPage> {
 
         print('Upload progress: $progress');
       });
-
       // 업로드 완료
-      await task;
-      print('Video uploaded successfully to Google Cloud Storage');
+      try {
+        await task;
+        print('Video uploaded successfully to Google Cloud Storage');
+      } catch (e) {
+        print('Upload failed: $e');
+        // 에러 발생 시 로딩창 닫고 에러 메시지 표시
+        Navigator.pop(context); // 로딩창 닫기
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Upload failed: $e')),
+        );
+        return; // 함수 종료
+      }
     } else {
       print('No file selected.');
     }
+    Navigator.pop(context);
   }
 
   @override
@@ -152,7 +198,7 @@ class _AddPageState extends State<AddPage> {
               TextFormField(
                 controller: _locationController,
                 decoration: const InputDecoration(
-                    labelText: 'Location',
+                    labelText: 'Location ex) 5S_110E',
                     prefixIcon: Icon(Icons.location_on_sharp)),
               ),
               DropdownButtonFormField(
@@ -196,7 +242,7 @@ class _AddPageState extends State<AddPage> {
                 Text('Selected video: ${_videoFile!.path}'),
               const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: _upload,
+                onPressed: _uploadConfig,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0077C8), // 색상 변경
                   shape: RoundedRectangleBorder(
