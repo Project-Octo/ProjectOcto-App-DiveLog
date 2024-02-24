@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-// import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
 // import 'package:flutter_background_service/flutter_background_service.dart';
 // dart:async, dart:io, dart:ui 라이브러리 import
@@ -136,16 +138,33 @@ class _AddPageState extends State<AddPage> {
       });
       // 업로드 완료
       try {
-        await task;
-        print('Video uploaded successfully to Google Cloud Storage');
+        await task.then((p0) async {
+          print('Video uploaded successfully to Google Cloud Storage');
+          final response = await http.post(
+            Uri.parse(
+                'https://asia-northeast3-turing-cell-410207.cloudfunctions.net/octo-species-info-ai'),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String>{
+              'video_name': newFileName,
+            }),
+          );
+          if (response.statusCode == 200) {
+            final aiResponseBody = response.body;
+            print('AI response: $aiResponseBody');
+          } else {
+            throw Exception('Failed to request AI');
+          }
+        });
       } catch (e) {
-        print('Upload failed: $e');
+        print('Error: $e');
         // 에러 발생 시 로딩창 닫고 에러 메시지 표시
         Navigator.pop(context); // 로딩창 닫기
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Upload failed: $e')),
         );
-        return; // 함수 종료
+        return;
       }
     } else {
       print('No file selected.');
