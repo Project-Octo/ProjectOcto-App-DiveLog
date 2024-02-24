@@ -116,7 +116,7 @@ class _AddPageState extends State<AddPage> {
                     if (snapshot.hasData) {
                       var progress = snapshot.data!.bytesTransferred /
                           snapshot.data!.totalBytes;
-                      progress = progress * 100;
+                      progress = progress;
                       return Text('${progress.toStringAsFixed(2)}%');
                     } else {
                       return const Text('0.00%');
@@ -136,7 +136,6 @@ class _AddPageState extends State<AddPage> {
 
         print('Upload progress: $progress');
       });
-      // 업로드 완료
       try {
         await task.then((p0) async {
           print('Video uploaded successfully to Google Cloud Storage');
@@ -165,6 +164,9 @@ class _AddPageState extends State<AddPage> {
           SnackBar(content: Text('Upload failed: $e')),
         );
         return;
+      } finally {
+        // 항상 로딩창 닫기
+        Navigator.pop(context);
       }
     } else {
       print('No file selected.');
