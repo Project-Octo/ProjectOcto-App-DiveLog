@@ -6,6 +6,8 @@ import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'package:octo_app/screens/animals_page.dart';
+
 final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
@@ -32,8 +34,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme,
-      home: const AuthGate(),
-      // home: const AuthScreen(),
+      // home: const AuthGate(),
+      home: AnimalsPage(),
     );
   }
 }

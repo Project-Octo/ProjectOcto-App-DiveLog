@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 // dart:async, dart:io, dart:ui 라이브러리 import
 import 'dart:async';
 // device_info_plus 플러그인 import
-import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:device_info_plus/device_info_plus.dart';
 // 안드로이드 플랫폼 관련 import
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-// 로컬 알림 관련 import
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+// // 로컬 알림 관련 import
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // shared_preferences 플러그인 import
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({Key? key});
